@@ -1,0 +1,14 @@
+numpy
+pandas
+shapely
+pyproj
+Pillow
+configobj
+cartopy
+bokeh
+panel
+geoviews!=1.6.1
+holoviews
+datashader
+colorcet
+pyviz-comms>=0.7.0
