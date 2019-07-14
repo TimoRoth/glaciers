@@ -12,3 +12,4 @@ holoviews
 datashader
 colorcet
 pyviz-comms>=0.7.0
+tornado<6
