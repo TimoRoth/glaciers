@@ -34,10 +34,11 @@ elev_kw   = dict(cmap='#7d3c98')
 temp_kw   = dict(num_bins=50, adjoin=False, normed=False, bin_range=data.range('avg_temp_at_mean_elev'))
 prcp_kw   = dict(num_bins=50, adjoin=False, normed=False, bin_range=data.range('avg_prcp'))
 
-geo_opts  = dict(min_height=400, cmap=bmy, global_extent=False, logz=True, colorbar=True, responsive=True)
-elev_opts = dict(min_height=400, show_grid=True, responsive=True)
-temp_opts = dict(min_height=400, fill_color='#f1948a', default_tools=[], toolbar=None, alpha=1.0, responsive=True)
-prcp_opts = dict(min_height=400, fill_color='#85c1e9', default_tools=[], toolbar=None, alpha=1.0, responsive=True)
+size_opts = dict(min_height=400, min_width=600, responsive=True)
+geo_opts  = dict(size_opts, cmap=bmy, global_extent=False, logz=True, colorbar=True)
+elev_opts = dict(size_opts, show_grid=True)
+temp_opts = dict(size_opts, fill_color='#f1948a', default_tools=[], toolbar=None, alpha=1.0)
+prcp_opts = dict(size_opts, fill_color='#85c1e9', default_tools=[], toolbar=None, alpha=1.0)
 
 geo_bg = gv.tile_sources.EsriImagery.options(alpha=0.6, bgcolor="black")
 geopoints = data.to(gv.Points, ['cenlon', 'cenlat'], ['area_km2'], []).options(**geo_opts).redim.range(area_km2=(0, 3000))
@@ -63,14 +64,8 @@ def count(data):
     return hv.Div('<p style="font-size:20px">Glaciers selected: {}'.format(len(data)) + "<br>" +
                   'Area: {:.0f} km² ({:.1f}%)</font>'.format(np.sum(data['area_km2']), np.sum(data['area_km2']) / total_area * 100)).options(height=40)
 
-# tricks to workaround https://github.com/ioam/holoviews/issues/2730
-def set_active_drag_raster(plot, element):
-    plot.state.toolbar.active_drag = plot.state.tools[2]
-def set_active_drag_shade(plot, element):
-    plot.state.toolbar.active_drag = plot.state.tools[0]
-
-static_geo  = rasterize(geo(data),   **geo_kw).options(alpha=0.1, tools=['hover', 'box_select'], finalize_hooks=[set_active_drag_raster], **geo_opts)
-static_elev = datashade(elev(data), **elev_kw).options(alpha=0.1, tools=[         'box_select'], finalize_hooks=[set_active_drag_shade], **elev_opts)
+static_geo  = rasterize(geo(data),   **geo_kw).options(alpha=0.1, tools=['hover', 'box_select'], active_tools=['box_select'], **geo_opts)
+static_elev = datashade(elev(data), **elev_kw).options(alpha=0.1, tools=[         'box_select'], active_tools=['box_select'], **elev_opts)
 static_temp = temp(data).options(alpha=0.1)
 static_prcp = prcp(data).options(alpha=0.1)
 
@@ -104,11 +99,11 @@ def get_oggm_panel():
     selections  = [geo_bounds, elev_bounds, temp_bounds, prcp_bounds]
     dyn_data    = hv.DynamicMap(select_data, streams=selections)
 
-    dyn_geo     = rasterize(Dynamic(dyn_data, operation=geo),   **geo_kw).options( **geo_opts)
-    dyn_elev    = datashade(Dynamic(dyn_data, operation=elev), **elev_kw).options(**elev_opts)
-    dyn_temp    =           Dynamic(dyn_data, operation=temp)
-    dyn_prcp    =           Dynamic(dyn_data, operation=prcp)
-    dyn_count   =           Dynamic(dyn_data, operation=count)
+    dyn_geo   = rasterize(dyn_data.apply(geo),  **geo_kw).options( **geo_opts)
+    dyn_elev  = datashade(dyn_data.apply(elev), **elev_kw).options(**elev_opts)
+    dyn_temp  =           dyn_data.apply(temp)
+    dyn_prcp  =           dyn_data.apply(prcp)
+    dyn_count =           dyn_data.apply(count)
 
     geomap = geo_bg * static_geo  * dyn_geo
     elevation       = static_elev * dyn_elev
@@ -136,7 +131,7 @@ def get_oggm_panel():
                     pn.layout.HSpacer(), pn.Column(pn.Pane(dyn_count), pn.layout.Spacer(height=20), clear_button),
                     pn.Pane(pv_logo, width=80))
 
-    return pn.Column(header, pn.Row(geomap, elevation), pn.Row(temperature, precipitation))
+    return pn.Column(header, pn.Row(geomap, elevation), pn.Row(temperature, precipitation), width_policy='max', height_policy='max')
 
 panel = get_oggm_panel()
 panel.servable()
