@@ -34,10 +34,10 @@ elev_kw   = dict(cmap='#7d3c98')
 temp_kw   = dict(num_bins=50, adjoin=False, normed=False, bin_range=data.range('avg_temp_at_mean_elev'))
 prcp_kw   = dict(num_bins=50, adjoin=False, normed=False, bin_range=data.range('avg_prcp'))
 
-geo_opts  = dict(width=600, height=300, cmap=bmy, global_extent=False, logz=True, colorbar=True)
-elev_opts = dict(width=600, height=300, show_grid=True)
-temp_opts = dict(width=600, height=300, fill_color='#f1948a', default_tools=[], toolbar=None, alpha=1.0)
-prcp_opts = dict(width=600, height=300, fill_color='#85c1e9', default_tools=[], toolbar=None, alpha=1.0)
+geo_opts  = dict(min_height=400, cmap=bmy, global_extent=False, logz=True, colorbar=True, responsive=True)
+elev_opts = dict(min_height=400, show_grid=True, responsive=True)
+temp_opts = dict(min_height=400, fill_color='#f1948a', default_tools=[], toolbar=None, alpha=1.0, responsive=True)
+prcp_opts = dict(min_height=400, fill_color='#85c1e9', default_tools=[], toolbar=None, alpha=1.0, responsive=True)
 
 geo_bg = gv.tile_sources.EsriImagery.options(alpha=0.6, bgcolor="black")
 geopoints = data.to(gv.Points, ['cenlon', 'cenlat'], ['area_km2'], []).options(**geo_opts).redim.range(area_km2=(0, 3000))
@@ -131,12 +131,12 @@ def get_oggm_panel():
     oggm_logo   = '<a href="https://oggm.org"><img src="https://raw.githubusercontent.com/OGGM/oggm/master/docs/_static/logos/oggm_s_alpha.png" width=170></a>'
     pv_logo     = '<a href="https://pyviz.org"><img src="http://pyviz.org/assets/PyViz_logo_wm.png" width=80></a>'
 
-    header = pn.Row(pn.Pane(oggm_logo, width=170), pn.Spacer(width=50),
+    header = pn.Row(pn.Pane(oggm_logo), pn.layout.Spacer(width=30),
                     pn.Column(pn.Pane(title, height=25, width=400), pn.Spacer(height=-15), pn.Pane(instruction, width=500)),
-                    pn.Spacer(width=180), pn.Column(pn.Pane(dyn_count), clear_button, pn.Spacer(height=-15)),
+                    pn.layout.HSpacer(), pn.Column(pn.Pane(dyn_count), pn.layout.Spacer(height=20), clear_button),
                     pn.Pane(pv_logo, width=80))
 
-    return pn.Column(header, pn.Spacer(height=-40), pn.Row(geomap, elevation), pn.Row(temperature, precipitation))
+    return pn.Column(header, pn.Row(geomap, elevation), pn.Row(temperature, precipitation))
 
 panel = get_oggm_panel()
 panel.servable()
