@@ -125,7 +125,7 @@ def get_oggm_panel():
     clear_button = pn.widgets.Button(name='Clear selection')
     clear_button.param.watch(clear_selections, 'clicks');
 
-    title       = '<p style="font-size:35px">World glaciers explorer</p>'
+    title       = '<div style="font-size:35px">World glaciers explorer</div>'
     instruction = 'Box-select on each plot to subselect; clear selection to reset.<br>' + \
                   'See the <a href="https://github.com/panel-demos/glaciers">Jupyter notebook</a> source code for how to build apps like this!'
     oggm_logo   = '<a href="https://oggm.org"><img src="https://raw.githubusercontent.com/OGGM/oggm/master/docs/_static/logos/oggm_s_alpha.png" width=170></a>'
