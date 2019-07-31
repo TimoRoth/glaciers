@@ -124,12 +124,12 @@ def get_oggm_panel():
     instruction = 'Box-select on each plot to subselect; clear selection to reset.<br>' + \
                   'See the <a href="https://github.com/panel-demos/glaciers">Jupyter notebook</a> source code for how to build apps like this!'
     oggm_logo   = '<a href="https://oggm.org"><img src="https://raw.githubusercontent.com/OGGM/oggm/master/docs/_static/logos/oggm_s_alpha.png" width=170></a>'
-    pv_logo     = '<a href="https://pyviz.org"><img src="http://pyviz.org/assets/PyViz_logo_wm.png" width=80></a>'
+    pn_logo     = '<a href="https://panel.pyviz.org"><img src="https://panel.pyviz.org/_static/logo_stacked.png" width=140></a>'
 
     header = pn.Row(pn.Pane(oggm_logo), pn.layout.Spacer(width=30),
                     pn.Column(pn.Pane(title, height=25, width=400), pn.Spacer(height=-15), pn.Pane(instruction, width=500)),
                     pn.layout.HSpacer(), pn.Column(pn.Pane(dyn_count), pn.layout.Spacer(height=20), clear_button),
-                    pn.Pane(pv_logo, width=80))
+                    pn.Pane(pn_logo, width=140))
 
     return pn.Column(header, pn.Row(geomap, elevation), pn.Row(temperature, precipitation), width_policy='max', height_policy='max')
 
