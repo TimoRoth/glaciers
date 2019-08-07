@@ -126,8 +126,8 @@ def get_oggm_panel():
     oggm_logo   = '<a href="https://oggm.org"><img src="https://raw.githubusercontent.com/OGGM/oggm/master/docs/_static/logos/oggm_s_alpha.png" width=170></a>'
     pn_logo     = '<a href="https://panel.pyviz.org"><img src="https://panel.pyviz.org/_static/logo_stacked.png" width=140></a>'
 
-    header = pn.Row(pn.Pane(oggm_logo), pn.layout.Spacer(width=30),
-                    pn.Column(pn.Pane(title, height=25, width=400), pn.Spacer(height=-15), pn.Pane(instruction, width=500)),
+    header = pn.Row(pn.Pane(oggm_logo),  pn.layout.Spacer(width=30),
+                    pn.Column(pn.Pane(title, width=400), pn.Pane(instruction, width=500)),
                     pn.layout.HSpacer(), pn.Column(pn.Pane(dyn_count), pn.layout.Spacer(height=20), clear_button),
                     pn.Pane(pn_logo, width=140))
 
